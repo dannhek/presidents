@@ -19,15 +19,17 @@ webSiteToDF <- function(year) {
      if (!is.null(x$`Popular Votes`)) {
           oneElection$popuVotes <- as.numeric(gsub('[^0-9]',"",as.character(x$`Popular Votes`)))
      } else {oneElection$popuVotes <- NaN}
-     if (year==1912) levels(oneElection$party)[2] <- "Bull Moose" #Bull Moose Instead of Progressive
      
+     #Special Handling for Historical Anomolies
+     if (year==1912) levels(oneElection$party)[2] <- "Bull Moose" #Bull Moose Instead of Progressive
+     if (year==1800) oneElection[oneElection$candidate=="Aaron Burr",]$elecVotes <- 72.99  #Control for Jefferson/Burr tie and the 12th amendment
      
      oneElection$year <- year
      return(oneElection)
      
 }
 
-#webSiteToDF(1912)
+#webSiteToDF(1800)
 
 allElections <- data.frame(
                      candiate = NULL
