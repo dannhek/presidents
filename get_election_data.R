@@ -6,7 +6,7 @@
 #     how long one party maintains its hold on the White House
 #     and how, if it all, that has changed over the last 250 years.
 #   www.github.com/dannhek/presidents
-#   [RPUBs]
+#   http://rpubs.com/tattooed_economist/party_dynasties
 #   tattooedeconomist.wordpress.com
 #File: get_election_data.R
 #     This file pulls all the data from 270toWin and formats it into 2 dataframes:

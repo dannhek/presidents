@@ -1,0 +1,132 @@
+---
+title: "How long does one party control the White House in US Politics"
+author: "Dann Hekman"
+date: "July 30, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+setwd("C:/Users/dhek/Google Drive/Personal Projects/R and AWS/Presidents")
+source('length_of_party_control.R')
+```
+Question
+========
+
+As a millennial born in the late '80s, I have a soft spot in my heart for '90s alt rock, remember a time before smartphones-but not before computers and the internet-and have taken it as a given that the political pendulum swings every decade making it essentially impossible for one party to have more than 3 terms in office (I only vaguely remember the G. H. W. Bush vs. W. Clinton election). So when Donald J. Trump beat Hillary Clinton in November, 2016, I, like most people, was surprised that our electorate had swung that far right as to elect a populist with a xenophobic agenda that was openly supported by the KKK and the so-called 'alt right.' I won't
+pretend that I actually thought Trump would win the presidency or
+somehow saw this coming, but I did predict (seriously, you can ask some
+of my friends who I talked to off the record) that if she won, Clinton
+would be a one-term president. Not because she's a woman or anything
+like that, but for the simple reason that since the 1950s, no party has
+ever held the White House for more than 3 consecutive terms.
+
+My question now, is whether or not this has always been the case.
+Incumbent presidents still have a 69+/-1% re-election rate, but at least
+for the last 30 years it seems as the parties' re-election rate has
+fallen. Is that really the case? After looking through the empirical
+data to answer that question, I will close this post with some
+qualitative context for the quantitative data and a brief discussion of
+what, if anything, I think this answer means for democracy.
+
+Data
+====
+
+All data for this essay come from [270toWin](http://www.270towin.com)
+(who, in turn, cite Wikipedia for a least some of their numbers). Data
+were retrieved using \`readXMLtable\` from the
+[XML](https://cran.r-project.org/web/packages/XML/index.html) R Package.
+All source code is available on
+[github](https://www.github.com/dannhek/presidents).
+
+How long do parties control the White House?
+============================================
+
+For want of a better word, how long is the typical party 'dynasty'? That
+is, how common is it-going back to 1789-for one party to maintain
+control of the White House for 2 terms, 5 terms, only one term at a
+time? There are some recognizable 'dynasties' throughout history, most
+notably the Jeffersonian Democratic-Republicans and most recently FDR's
+New Deal Democrats. But in general, 2 terms is the median number of
+terms for any one party to hold the White House (hereafter WH), and
+while the distribution is inherently skewed due to the impossibility of
+negative terms, the average isn't much higher: ~2.48 terms.
+
+```{r fig1}
+question2answer
+```
+
+The most recent 'long dynasty' of 4 or more consecutive terms within the
+same party was FDR and Truman (5 terms total), which was over 60 years
+ago (20% of the nation's history). Does that mean that long-running
+party dynasties are over and we're floundering between electing
+individuals for two terms in a row and then alternating parties? Maybe.
+The data tell two stories. First is that the long-term trendline does
+have a negative slope. The second story is that the slope is barely
+negative and the confidence interval contains positive slopes because
+while we have fewer long-running periods with one party retaining the
+WH, we also have fewer one-term presidents where we swap back and forth
+between parties like we did in the 1840s and 1870s. That is, the
+standard deviation for number of terms one party holds before turning
+over the WH has fallen from a standard deviation of 2.16 terms pre-1900
+to a standard deviation of only 1.09 terms since the beginning of the
+20<sup>th</sup> century.
+
+Figure 2 shows the moving averages of the length of political party
+dynasties. Each 'dynasty' is a point on the graph, the blue line is a
+the 'noisy' moving average looking at the average number of terms the
+incumbent party has been in the WH for the last 5 elections, and the red
+line is the slightly smoother moving average 'dynasty' length for the
+last 5 periods of uninterrupted party control in the WH. The black line
+is the trendline for average of the smoother of the two moving averages.
+
+```{r fig2}
+question4answerC
+```
+
+Discussion
+==========
+
+Let's look at this with a little bit of context. The longest running
+party dynasty was that of the Jeffersonian Democratic-Republicans, which
+didn't end until Andrew Jackson won in 1828 (after an extremely
+contentious election in 1824 where he won a plurality in the electoral
+college and popular vote, but lost the majority and was rejected by the
+House of Representatives) with the newly formed Democratic party (which,
+at the time, was built on a platform of [White
+Supremacy](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwjV4J7x8LHVAhWL8YMKHWzhDHcQyCkIKjAA&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DZ6R0NvVr164&usg=AFQjCNGUud3_75myUcj4XaBO5EjYl7-vUQ)).
+In 1884, Grover Cleveland became the first Democrat (again, at the time
+this was the more conservative party) after a string of 6 Radical
+Republican terms starting with Abraham Lincoln and promoting a doctrine
+of equal rights and reunification of North and South after the bitter
+American Civil War (1861-1865).
+
+In 1912, Woodrow Wilson took advantage of internal divisions in the
+Progressive Party (Republicans) and captured the White House from Taft
+after the Republican vote was split between Taft and Teddy Roosevelt.
+Finally, the most recent political streak ended when Dwight D.
+Eisenhower became the first Republican (now the political right) to win
+since FDR Reinvented the Democratic Party with the New Deal.
+
+In other words, dynasties seem to come and then fall alongside dramatic
+shifts or reinventions in the party. Even adjusting for the fact that
+the Democratic and Republican Parties switched sides (and essentially
+became new parties with old names), the longest running party is the
+Democratic Party from Jackson through Wilson. Second place goes to the
+existing Democratic and Republican Parties which started with FDR (or
+Eisenhower or Truman, depending on how you want to count them).
+
+
+```{r kable, asis=TRUE}
+question5answer
+```
+
+In other words. we've had the same parties for a really long time (80
+years), and it feels like time for a change. We can see the internal factions clearly within the Republican Party now as they debate how to replace the Affordable Care Act. Because of the [first past the post
+](https://en.wikipedia.org/wiki/First-past-the-post_voting) voting
+system in the United States, a viable third party hasn't been possible
+since the mid-1800s, and I don't see that changing now. But it does seem
+like we're entering into a new era.  
+For the sake of historical record keeping, I really hope we finally dissolve one or both of the existing parties and name the replacement(s) something new. The question that remains is whether it will be the Democratic Party that needs to be reinvented after losing to the least popular, most disapproved-of candidate since we've tracked candidate approval ratings, or will it be the Republican Party that can't seem to pass a comprehensive Health Care bill with majorities in the House, Senate, and control of the WH and 7 years of campaigning on repeal and replace to prepare. Or, we should be so lucky as to institute a parliamentary system or at least one with an
+alternative vote and viable third parties, but that's just crazy talk.

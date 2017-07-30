@@ -6,7 +6,7 @@
 #     how long one party maintains its hold on the White House
 #     and how, if it all, that has changed over the last 250 years.
 #   www.github.com/dannhek/presidents
-#   [RPUBs]
+#   http://rpubs.com/tattooed_economist/party_dynasties
 #   tattooedeconomist.wordpress.com
 #File: length_of_party_control.R
 #     This file does the heavy lifting for calculating the answer to
@@ -17,6 +17,7 @@
 #             what's the probability of the incumbant party winning?
 #       4.) Are 'runs' getting shorter? I.e. do party changes in the
 #             White House occur more or less frequently now than previously?
+#       5.) How long do political parties last?
 #Dependencies
 #   Packages: See Below
 #   This file depends on:
@@ -26,7 +27,7 @@
 #       [filename].rmd - Write-up for this Project
 
 #Load Required Packages
-for (pkg in c('plyr','dplyr','ggplot2','XML','zoo')) {
+for (pkg in c('plyr','dplyr','ggplot2','XML','zoo','knitr')) {
      if (!require(pkg,character.only = T)) {
           install.packages(pkg)
           library(pkg,character.only = T)
@@ -47,7 +48,11 @@ if (file.exists("all_elections.csv")){
 #   Get cases where an incumbant was running, and calculate the proportion
 #   where the incumbant won.
 x <- subset(electionsByYear,incumbantPresWin==TRUE | incumbantPresUpset==TRUE)
-question1answer <- sum(x$incumbantPresWin)/nrow(x)
+question1answer <- list(
+    all_time  = sum(x$incumbantPresWin)/nrow(x)
+   ,since1950 = sum(subset(x,year>1950,TRUE)$incumbantPresWin)/nrow(subset(x,year>1950,TRUE))
+   ,befor1950 = sum(subset(x,year<1950,TRUE)$incumbantPresWin)/nrow(subset(x,year<1950,TRUE))
+   )
 rm(x)
 
 #Question 2: How Long do parties stay in the whitehouse?
@@ -66,7 +71,7 @@ for (ln in 1:nrow(x)) {
      x$q3[ln-1] <- ifelse(change|is.na(change),x$run[ln-1],NA)
 }
 question2answer <- ggplot(subset(x,!is.na(q2)),aes(x=q2)) +
-                    ggtitle("Frequency of Consecutive Terms before Turnover") +
+                    ggtitle("Figure 1: Frequency of Consecutive Terms before Turnover") +
                     scale_x_continuous(breaks=c(0:8)) +
                     geom_histogram(binwidth=1,fill='darkred',size=1.2,color='lightgray') +
                     xlab("Consecutive Terms") +
@@ -104,7 +109,36 @@ x$q4b <- c(rep(NA,numPeriods-1),rollmean(x$q3,numPeriods))
 #      geom_point(aes(y=q3))
 
 question4answerC <- ggplot(data=x,aes(x=year)) +
-     ylim(c(0,7)) +
+     ylim(c(0,7)) + ylab('Consecutive Terms by One Party') + xlab('Year') +
      geom_line(aes(y=q4b,colour=paste0('Avg. Run Length of Last ',numPeriods,' \'Dynasties\''))) +
      geom_line(aes(y=q4a,colour=paste0('Avg. Run Length within Last ',numPeriods,' Elections'))) +
-     geom_point(aes(y=q3))
+     geom_smooth(aes(y=q4b),colour='black',method='lm',size=0.2) +
+     geom_point(aes(y=q3)) +
+     theme(
+          panel.background = element_rect(fill="lightgray"),
+          panel.grid.minor.x = element_line(FALSE),
+          panel.grid.major.x = element_line(FALSE),
+          legend.position = 'bottom'
+     ) + ggtitle('Figure 2: Length of Political Party Dynasties over Time') +
+     labs(color='')
+
+question4answerC
+
+
+question4answerD <- list(
+      sd_AllYears  = sd(x$q3)
+     ,sd_Befor1900 = sd(subset(x,year<1900)$q3)
+     ,sd_since1900 = sd(subset(x,year>=1900)$q3)
+)
+
+#Question 5: How long do Parties Last?
+y<-ddply(electionsByYear,.(party),summarize,start=min(year),end=max(year)+4)
+y$length <- y$end-y$start
+question5answer <- kable(y[order(y$start),],format='pandoc',row.names=FALSE,
+                      col.names=c('Political Party Name','Year of First Presidential Win','Year of Most Recent President in Office','Age (Years)'),
+                      caption='Age of Political Parties; Source = www.270toWin.com'
+)
+
+#Save off a couple JPGs
+jpeg('histogram_of_runs.jpeg') ; question2answer ; dev.off()
+jpeg('moving_avg_plot.jpeg') ; question4answerC ; dev.off()
