@@ -28,15 +28,19 @@
 
 #Load Required Packages
 for (pkg in c('plyr','dplyr','ggplot2','XML','zoo','knitr')) {
-     if (!require(pkg,character.only = T)) {
+     if (!is.element(pkg,installed.packages()[,1])) {
+          r <- getOption("repos")
+          r["CRAN"] <- "http://cran.us.r-project.org"
+          options(repos = r)
+          rm(r)
           install.packages(pkg)
-          library(pkg,character.only = T)
-     }
+        }
+      library(pkg,character.only = T)
 }
 
 #Load the Data. Pull it from Local files if they exist
 #   or from http://www.270toWin.com using get_election_data.R if necessary
-setwd("C:/Users/dhek/Google Drive/Personal Projects/R and AWS/Presidents")
+#setwd("C:/Users/dhek/Google Drive/Personal Projects/R and AWS/Presidents")
 rm(list=ls()) #clear whatever else is currently loaded from previous sessions
 if (file.exists("all_elections.csv")){
      allElections <- read.csv("all_elections.csv")
@@ -139,6 +143,6 @@ question5answer <- kable(y[order(y$start),],format='pandoc',row.names=FALSE,
                       caption='Age of Political Parties; Source = www.270toWin.com'
 )
 
-#Save off a couple JPGs
-jpeg('histogram_of_runs.jpeg') ; question2answer ; dev.off()
-jpeg('moving_avg_plot.jpeg') ; question4answerC ; dev.off()
+#Save off a couple PNGs
+png('histogram_of_runs.png') ; question2answer ; dev.off()
+png('moving_avg_plot.png') ; question4answerC ; dev.off()
